@@ -1,0 +1,31 @@
+# Files in this pack
+
+    0.01 MB  app.py
+    0.00 MB  calibration/learned_selector.json
+    0.00 MB  calibration/temperature_scaling.json
+    0.38 MB  figures/Fig1_TRIDENT_framework_600dpi.png
+    0.80 MB  figures/Fig2_internal_selective_prediction_600dpi.png
+    0.61 MB  figures/Fig3_selective_risk_transportability_600dpi.png
+    0.01 MB  inference.py
+    0.00 MB  lib/__init__.py
+    0.00 MB  lib/eval_transforms.py
+    0.00 MB  lib/model_utils.py
+    0.00 MB  lib/signals.py
+  110.38 MB  models/swin_t_seed42_best.pt
+  110.38 MB  models/swin_t_seed43_best.pt
+  110.38 MB  models/swin_t_seed44_best.pt
+  110.38 MB  models/swin_t_seed45_best.pt
+  110.38 MB  models/swin_t_seed46_best.pt
+    6.21 MB  models/yolov8n_tooth_localizer.pt
+    0.19 MB  predictions/internal_val_manifest.csv
+    0.04 MB  predictions/swin_t_seed42_internal_val_matched_predictions.npz
+    0.04 MB  predictions/swin_t_seed43_internal_val_matched_predictions.npz
+    0.04 MB  predictions/swin_t_seed44_internal_val_matched_predictions.npz
+    0.04 MB  predictions/swin_t_seed45_internal_val_matched_predictions.npz
+    0.04 MB  predictions/swin_t_seed46_internal_val_matched_predictions.npz
+    0.01 MB  samples/sample_A.jpg
+    0.01 MB  samples/sample_B.jpg
+    0.01 MB  samples/sample_C.jpg
+    0.01 MB  samples/sample_D.jpg
+
+Total unpacked (copied files): 560.4 MB

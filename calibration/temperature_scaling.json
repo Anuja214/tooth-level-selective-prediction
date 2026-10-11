@@ -1,0 +1,6 @@
+{
+  "T": 1.7677718194708893,
+  "fit_split": "internal_val_matched",
+  "n_val": 1807,
+  "note": "Fit on 5-seed ensemble-mean raw probability, NOT the original project's single-model T=1.253 -- refit here because the underlying probability being calibrated is different (ensemble mean vs single model) and this project's own val split (localizer-matched, not the clean tooth_crops val)."
+}
