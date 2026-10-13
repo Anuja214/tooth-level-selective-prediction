@@ -25,6 +25,8 @@ from inference import (
     CAVITY,
     BUNDLE,
     ScreeningEngine,
+    InvalidDentalXRayError,
+    validate_dental_radiograph,
 )
 
 SAMPLE_DIR = BUNDLE.samples
@@ -250,31 +252,53 @@ with tab_live:
 
     image_bgr = None
     source_name = None
+    validation_error = None
+
     if uploaded is not None:
         try:
-            image_bgr = load_bgr_from_upload(uploaded)
-            source_name = uploaded.name
+            raw_img = load_bgr_from_upload(uploaded)
+            engine = get_engine()
+            valid, msg = validate_dental_radiograph(raw_img, localizer=engine._ensure_localizer())
+            if not valid:
+                validation_error = (
+                    f"Invalid dental X-ray: {msg} "
+                    "Please upload a valid dental X-ray (such as a periapical, bitewing, or panoramic radiograph)."
+                )
+            else:
+                image_bgr = raw_img
+                source_name = uploaded.name
         except Exception as exc:
             st.error(str(exc))
     elif sample_choice != "—":
         fname = dict(SAMPLES)[sample_choice]
         path = os.path.join(SAMPLE_DIR, fname)
         if os.path.exists(path):
-            image_bgr = load_bgr_from_path(path)
-            source_name = sample_choice
+            raw_img = load_bgr_from_path(path)
+            engine = get_engine()
+            valid, msg = validate_dental_radiograph(raw_img, localizer=engine._ensure_localizer())
+            if not valid:
+                validation_error = f"Invalid dental X-ray: {msg}"
+            else:
+                image_bgr = raw_img
+                source_name = sample_choice
         else:
             st.warning(f"Sample not found at {path}")
 
-    run = st.button("Run screening", type="primary", disabled=image_bgr is None)
+    if validation_error:
+        st.session_state.pop("last_result", None)
+        st.session_state.pop("last_source", None)
+        st.error(f"❌ {validation_error}")
 
-    if image_bgr is not None and not run and "last_result" not in st.session_state:
+    run = st.button("Run screening", type="primary", disabled=(image_bgr is None or validation_error is not None))
+
+    if image_bgr is not None and not run and "last_result" not in st.session_state and not validation_error:
         st.image(
             cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB),
             caption=f"Input · {source_name} · {image_bgr.shape[1]}×{image_bgr.shape[0]}",
             use_container_width=True,
         )
 
-    if run and image_bgr is not None:
+    if run and image_bgr is not None and not validation_error:
         try:
             engine = get_engine()
             with st.spinner("Localising teeth and running the 5-seed ensemble…"):
@@ -285,6 +309,9 @@ with tab_live:
                 )
             st.session_state["last_result"] = res
             st.session_state["last_source"] = source_name
+        except InvalidDentalXRayError as exc:
+            st.error(f"❌ {str(exc)}")
+            res = None
         except Exception as exc:
             st.exception(exc)
             res = None
